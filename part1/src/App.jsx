@@ -1,60 +1,29 @@
 import { useState } from "react";
 
-const Button = ({ handleClick, text }) => (
-  <button onClick={handleClick}>
-    {text}
-  </button>
-)
+const App = () => {
+  const anecdotes = [
+    "If it hurts, do it more often.",
+    "Adding manpower to a late software project makes it later!",
+    "The first 90 percent of the code accounts for the first 10 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.",
+    "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.",
+    "Premature optimization is the root of all evil.",
+    "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.",
+    "Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.",
+    "The only way to go fast, is to go well.",
+  ];
 
-const StatisticLine = ({ name, value }) => (
-  <tr>
-    <td>{name}</td>
-    <td>{value}</td>
-  </tr>
-)
-
-const Statistics = ({ good, neutral, bad }) => {
-  const total = good + neutral + bad;
-  const average = (good - bad) / total;
-  const positive = (good / total) * 100;
-
-  return (
-    <>
-      <h2>Statistics</h2>
-      {good === 0 && neutral === 0 && bad === 0 ? (
-        <p>No feedback given</p>
-      ) : (
-        <>
-          <table>
-            <tbody>
-              <StatisticLine name="good" value={good} />
-              <StatisticLine name="neutral" value={neutral} />
-              <StatisticLine name="bad" value={bad} />
-              <StatisticLine name="all" value={total} />
-              <StatisticLine name="average" value={average} />
-              <StatisticLine name="positive" value={positive + "%"} />
-            </tbody>
-          </table>
-        </>
-      )}
-    </>
-  );
-};
-
-function App() {
-  const [good, setGood] = useState(0);
-  const [neutral, setNeutral] = useState(0);
-  const [bad, setBad] = useState(0);
+  const [selected, setSelected] = useState(0);
+  const setToSelected = () => {
+    const nextSelected = selected + 1 >= anecdotes.length ? 0 : selected + 1;
+    setSelected(nextSelected);
+  };
 
   return (
     <div>
-      <h2>Give feedback</h2>
-      <Button handleClick={() => setGood((p) => p + 1)} text="good" />
-      <Button handleClick={() => setNeutral((p) => p + 1)} text="neutral" />
-      <Button handleClick={() => setBad((p) => p + 1)} text="bad" />
-      <Statistics good={good} neutral={neutral} bad={bad} />
+      <p>{anecdotes[selected]}</p>
+      <button onClick={setToSelected}>next anecdote</button>
     </div>
   );
-}
+};
 
 export default App;
