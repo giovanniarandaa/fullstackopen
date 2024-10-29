@@ -3,7 +3,7 @@ const PersonDetail = ({ person, onDelete }) => {
     <li>
       {person.name} {person.number}{" "}
       <button type="button" onClick={onDelete}>
-        Eliminar
+        delete
       </button>
     </li>
   );

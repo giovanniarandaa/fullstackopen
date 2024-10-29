@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import Filter from "./Filter.jsx";
 import PersonForm from "./PersonForm.jsx";
 import Persons from "./Persons.jsx";
-import axios from "axios";
-import { create, destroy, getAll } from "./persons.js";
+import { create, destroy, getAll, update } from "./persons.js";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -22,15 +21,27 @@ const App = () => {
 
     const existsName = persons.find((person) => person.name === newName);
 
-    if (existsName) {
-      alert(`${newName} is already added to phonebook`);
-      return;
-    }
-
     const person = {
       name: newName,
       number: newPhone,
     };
+
+    if (existsName) {
+      const response = window.confirm(
+        `${newName} is already added to phonebook, replace the old number with a new one`,
+      );
+      if (response) {
+        update(existsName.id, person).then((responsePerson) => {
+          const newPersons = persons.map((person) =>
+            person.id !== existsName.id ? person : responsePerson.data,
+          );
+
+          console.log(newPersons);
+          setPersons(newPersons);
+        });
+      }
+      return;
+    }
 
     create(person).then((res) => {
       setPersons(persons.concat(res.data));
