@@ -3,7 +3,7 @@ import Filter from "./Filter.jsx";
 import PersonForm from "./PersonForm.jsx";
 import Persons from "./Persons.jsx";
 import axios from "axios";
-import { create, getAll } from "../persons.js";
+import { create, destroy, getAll } from "./persons.js";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -43,6 +43,17 @@ const App = () => {
     person.name.toLowerCase().includes(search.toLowerCase()),
   );
 
+  const handleDelete = (id) => {
+    const person = persons.find((person) => person.id === id);
+    const result = window.confirm(`Delete ${person.name} ?`);
+
+    if (result) {
+      destroy(person.id).then((res) => {
+        setPersons((prev) => prev.filter((person) => person.id !== id));
+      });
+    }
+  };
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -56,7 +67,7 @@ const App = () => {
         handleSubmit={handleSubmit}
       />
       <h2>Numbers</h2>
-      <Persons persons={filterPersons} />
+      <Persons persons={filterPersons} onDelete={handleDelete} />
     </div>
   );
 };

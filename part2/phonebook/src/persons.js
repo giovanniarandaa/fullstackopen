@@ -9,3 +9,7 @@ export const getAll = () => {
 export const create = (newObject) => {
   return axios.post(baseUrl, newObject);
 };
+
+export const destroy = (id) => {
+  return axios.delete(`${baseUrl}/${id}`);
+};
