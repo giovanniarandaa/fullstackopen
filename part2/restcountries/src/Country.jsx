@@ -4,7 +4,7 @@ const getLanguage = (languages) => {
 
 const Country = ({ country }) => {
   return (
-    <>
+    <div>
       <h1>{country.name.common}</h1>
       <p>capital {country.capital[0]}</p>
       <p>area {country.area}</p>
@@ -18,7 +18,7 @@ const Country = ({ country }) => {
         height={300}
         alt={country.name.common}
       />
-    </>
+    </div>
   );
 };
 export default Country;
