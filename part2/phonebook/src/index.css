@@ -1,0 +1,17 @@
+.notificacion {
+    border-radius: 6px;
+    font-size: 20px;
+    padding: 10px;
+    margin-bottom: 1rem;
+}
+
+.notificacion h3 {
+    margin: 0;
+    padding: 0;
+}
+
+.notificacion.success {
+    background: rgb(211,211,211);
+    color: darkgreen;
+    border: 2px solid darkgreen;
+}

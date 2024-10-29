@@ -3,12 +3,15 @@ import Filter from "./Filter.jsx";
 import PersonForm from "./PersonForm.jsx";
 import Persons from "./Persons.jsx";
 import { create, destroy, getAll, update } from "./persons.js";
+import NotificationSuccess from "./NotificationSuccess.jsx";
+import "./index.css";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newPhone, setNewPhone] = useState("");
   const [search, setSearch] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     getAll().then((res) => {
@@ -36,17 +39,24 @@ const App = () => {
             person.id !== existsName.id ? person : responsePerson.data,
           );
 
-          console.log(newPersons);
           setPersons(newPersons);
+          setSuccessMessage(`Updated ${person.name}`);
+          setTimeout(() => {
+            setSuccessMessage(null);
+          }, 5000);
         });
       }
       return;
     }
 
-    create(person).then((res) => {
-      setPersons(persons.concat(res.data));
+    create(person).then(({ data }) => {
+      setPersons(persons.concat(data));
       setNewName("");
       setNewPhone("");
+      setSuccessMessage(`Added ${data.name}`);
+      setTimeout(() => {
+        setSuccessMessage(null);
+      }, 5000);
     });
   };
 
@@ -68,6 +78,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      {successMessage && <NotificationSuccess message={successMessage} />}
       <Filter search={search} setSearch={setSearch} />
       <h2>Add a new</h2>
       <PersonForm
