@@ -3,6 +3,7 @@
     font-size: 20px;
     padding: 10px;
     margin-bottom: 1rem;
+    background: lightgrey;
 }
 
 .notificacion h3 {
@@ -11,7 +12,11 @@
 }
 
 .notificacion.success {
-    background: rgb(211,211,211);
     color: darkgreen;
     border: 2px solid darkgreen;
+}
+
+.notificacion.error {
+    color: red;
+    border: 2px solid red;
 }

@@ -5,6 +5,7 @@ import Persons from "./Persons.jsx";
 import { create, destroy, getAll, update } from "./persons.js";
 import NotificationSuccess from "./NotificationSuccess.jsx";
 import "./index.css";
+import NotificacionError from "./NotificacionError.jsx";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -12,6 +13,7 @@ const App = () => {
   const [newPhone, setNewPhone] = useState("");
   const [search, setSearch] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     getAll().then((res) => {
@@ -69,9 +71,18 @@ const App = () => {
     const result = window.confirm(`Delete ${person.name} ?`);
 
     if (result) {
-      destroy(person.id).then((res) => {
-        setPersons((prev) => prev.filter((person) => person.id !== id));
-      });
+      destroy(person.id)
+        .then((res) => {
+          setPersons((prev) => prev.filter((person) => person.id !== id));
+        })
+        .catch((err) => {
+          setErrorMessage(
+            `Information of ${person.name} has already been removed from server`,
+          );
+          setTimeout(() => {
+            setErrorMessage(null);
+          }, 5000);
+        });
     }
   };
 
@@ -79,6 +90,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       {successMessage && <NotificationSuccess message={successMessage} />}
+      {errorMessage && <NotificacionError message={errorMessage} />}
       <Filter search={search} setSearch={setSearch} />
       <h2>Add a new</h2>
       <PersonForm
