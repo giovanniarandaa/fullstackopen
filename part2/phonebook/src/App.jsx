@@ -3,6 +3,7 @@ import Filter from "./Filter.jsx";
 import PersonForm from "./PersonForm.jsx";
 import Persons from "./Persons.jsx";
 import axios from "axios";
+import { create, getAll } from "../persons.js";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -11,7 +12,7 @@ const App = () => {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((res) => {
+    getAll().then((res) => {
       setPersons(res.data);
     });
   }, []);
@@ -31,7 +32,7 @@ const App = () => {
       number: newPhone,
     };
 
-    axios.post("http://localhost:3001/persons", person).then((res) => {
+    create(person).then((res) => {
       setPersons(persons.concat(res.data));
       setNewName("");
       setNewPhone("");
