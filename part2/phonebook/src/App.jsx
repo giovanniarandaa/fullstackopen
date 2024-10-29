@@ -26,16 +26,16 @@ const App = () => {
       return;
     }
 
-    setPersons((p) => [
-      ...p,
-      {
-        name: newName,
-        number: newPhone,
-        id: persons.length + 1,
-      },
-    ]);
-    setNewName("");
-    setNewPhone("");
+    const person = {
+      name: newName,
+      number: newPhone,
+    };
+
+    axios.post("http://localhost:3001/persons", person).then((res) => {
+      setPersons(persons.concat(res.data));
+      setNewName("");
+      setNewPhone("");
+    });
   };
 
   const filterPersons = persons.filter((person) =>
