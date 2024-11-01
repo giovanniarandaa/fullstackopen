@@ -48,14 +48,23 @@ app.get('/api/persons/:id', (request, response) => {
 app.post('/api/persons', (request, response) => {
     const body = request.body
 
-    if (!body.name && !body.number) {
+    if (!body.name || !body.number) {
         return response.status(400).json({
             error: 'content missing'
         })
     }
 
+    const name = body.name
+
+    const existsName = persons.find(person => person.name === name)
+    if (existsName) {
+        return response.status(400).json({
+            error: 'Name duplicated'
+        })
+    }
+
     const person = {
-        name: body.name,
+        name,
         number: body.number,
         id: generateId(),
     }
