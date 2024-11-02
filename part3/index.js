@@ -56,43 +56,26 @@ app.get("/api/persons", (request, response) => {
 });
 
 app.get("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id);
-  const person = persons.find((person) => person.id === id);
-
-  if (person) {
+  Person.findById(request.params.id).then((person) => {
     response.json(person);
-  } else {
-    response.status(404).end();
-  }
+  });
 });
 
 app.post("/api/persons", (request, response) => {
   const body = request.body;
 
-  if (!body.name || !body.number) {
-    return response.status(400).json({
-      error: "content missing",
-    });
+  if (body.name === undefined || body.number === undefined) {
+    return response.status(400).json({ error: "content missing" });
   }
 
-  const name = body.name;
-
-  const existsName = persons.find((person) => person.name === name);
-  if (existsName) {
-    return response.status(400).json({
-      error: "Name duplicated",
-    });
-  }
-
-  const person = {
-    name,
+  const person = new Person({
+    name: body.name,
     number: body.number,
-    id: generateId(),
-  };
+  });
 
-  persons = persons.concat(person);
-
-  response.json(person);
+  person.save().then((savedPerson) => {
+    response.json(savedPerson);
+  });
 });
 
 app.delete("/api/persons/:id", (request, response) => {
