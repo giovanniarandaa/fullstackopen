@@ -51,15 +51,19 @@ const App = () => {
       return;
     }
 
-    create(person).then(({ data }) => {
-      setPersons(persons.concat(data));
-      setNewName("");
-      setNewPhone("");
-      setSuccessMessage(`Added ${data.name}`);
-      setTimeout(() => {
-        setSuccessMessage(null);
-      }, 5000);
-    });
+    create(person)
+      .then(({ data }) => {
+        setPersons(persons.concat(data));
+        setNewName("");
+        setNewPhone("");
+        setSuccessMessage(`Added ${data.name}`);
+        setTimeout(() => {
+          setSuccessMessage(null);
+        }, 5000);
+      })
+      .catch((err) => {
+        setErrorMessage(err.response.data.error);
+      });
   };
 
   const filterPersons = persons.filter((person) =>
