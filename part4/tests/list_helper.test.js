@@ -110,3 +110,12 @@ describe("favorite blog", () => {
     });
   });
 });
+
+test("Author with most blogs", () => {
+  const result = listHelper.mostBlogs(blogs);
+  const expected = {
+    author: "Robert C. Martin",
+    blogs: 3,
+  };
+  assert.deepStrictEqual(result, expected);
+});
