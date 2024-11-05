@@ -119,3 +119,12 @@ test("Author with most blogs", () => {
   };
   assert.deepStrictEqual(result, expected);
 });
+
+test("Author with most likes", () => {
+  const result = listHelper.mostLikes(blogs);
+  const expected = {
+    author: "Edsger W. Dijkstra",
+    likes: 17,
+  };
+  assert.deepStrictEqual(result, expected);
+});
