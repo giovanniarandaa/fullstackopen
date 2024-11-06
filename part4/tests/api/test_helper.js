@@ -12,3 +12,7 @@ const initialBlogs = [
     likes: 5,
   },
 ];
+
+module.exports = {
+  initialBlogs,
+};
