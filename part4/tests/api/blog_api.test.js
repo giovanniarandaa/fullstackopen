@@ -56,6 +56,23 @@ test("a new blog can be created with a POST request", async () => {
   assert.ok(titles.includes(newBlog.title));
 });
 
+test("if the likes property is missing, it defaults to 0", async () => {
+  const newBlog = {
+    title: "Blog sin Likes",
+    author: "Autor de Prueba",
+    url: "http://example.com",
+  };
+
+  const response = await api
+    .post("/api/blogs")
+    .send(newBlog)
+    .expect(201)
+    .expect("Content-Type", /application\/json/);
+
+  const blogCreated = response.body;
+  assert.strictEqual(blogCreated.likes, 0);
+});
+
 after(async () => {
   await mongoose.connection.close();
 });
