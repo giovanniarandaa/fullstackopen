@@ -73,6 +73,24 @@ test("if the likes property is missing, it defaults to 0", async () => {
   assert.strictEqual(blogCreated.likes, 0);
 });
 
+test("responds with 400 Bad Request if url is missing", async () => {
+  const newBlog = {
+    title: "Title without URL",
+    author: "Author",
+  };
+
+  const response = await api
+    .post("/api/blogs")
+    .send(newBlog)
+    .expect(400)
+    .expect("Content-Type", /application\/json/);
+
+  assert.strictEqual(
+    response.body.error,
+    "Blog validation failed: url: URL is required",
+  );
+});
+
 after(async () => {
   await mongoose.connection.close();
 });
