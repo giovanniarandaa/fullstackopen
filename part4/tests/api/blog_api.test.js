@@ -91,6 +91,21 @@ test("responds with 400 Bad Request if url is missing", async () => {
   );
 });
 
+test("deletion of a blog", async () => {
+  const blogAtStart = await helper.blogsInDb();
+  const blogToDelete = blogAtStart[0];
+
+  await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+
+  const blogAtEnd = await helper.blogsInDb();
+
+  assert.strictEqual(blogAtEnd.length, helper.initialBlogs.length - 1);
+
+  const contents = blogAtEnd.map((r) => r.title);
+
+  assert(!contents.includes(blogToDelete.title));
+});
+
 after(async () => {
   await mongoose.connection.close();
 });
