@@ -20,7 +20,12 @@ const blogsInDb = async () => {
   return blogs.map((blog) => blog.toJSON());
 };
 
+const nonExistingId = () => {
+  return "673529e59b286eeebd55ca21";
+};
+
 module.exports = {
   initialBlogs,
   blogsInDb,
+  nonExistingId,
 };

@@ -1,4 +1,4 @@
-const { test, after, beforeEach } = require("node:test");
+const { test, after, beforeEach, describe } = require("node:test");
 const assert = require("node:assert");
 const app = require("../../app");
 const supertest = require("supertest");
@@ -89,6 +89,33 @@ test("responds with 400 Bad Request if url is missing", async () => {
     response.body.error,
     "Blog validation failed: url: URL is required",
   );
+});
+
+describe("viewing a specific blog", () => {
+  test("succeeds with a valid id", async () => {
+    const blogsAtStart = await helper.blogsInDb();
+
+    const blogToView = blogsAtStart[0];
+
+    const resultNote = await api
+      .get(`/api/blogs/${blogToView.id}`)
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+
+    assert.deepStrictEqual(resultNote.body, blogToView);
+  });
+
+  test("fails with statuscode 404 if note does not exist", async () => {
+    const validNonexistingId = helper.nonExistingId();
+
+    await api.get(`/api/blogs/${validNonexistingId}`).expect(404);
+  });
+
+  test("fails with statuscode 400 id is invalid", async () => {
+    const invalidId = "5a3d5da59070081a82a3445";
+
+    await api.get(`/api/blogs/${invalidId}`).expect(400);
+  });
 });
 
 test("deletion of a blog", async () => {
