@@ -8,5 +8,6 @@ Content-Type: application/json
   "title": "Titulo 1",
   "author": "Giovnani Aranda",
   "url": "https://translate.google.com/?sl=es&tl=en&op=translate",
-  "likes": 100
+  "likes": 100,
+  "userId": "673a41cebc80a25860e57645"
 }
