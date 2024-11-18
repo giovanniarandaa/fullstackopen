@@ -3,6 +3,7 @@ const Blog = require("../models/blog");
 const User = require("../models/user");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
+const middleware = require("../utils/middleware");
 
 const getTokenFrom = (request) => {
   const authorization = request.get("authorization");
@@ -17,59 +18,57 @@ blogsRouter.get("/", async (request, response) => {
   response.json(blogs);
 });
 
-blogsRouter.post("/", async (request, response, next) => {
-  try {
-    const body = request.body;
-    const token = request.token;
-    const decodedToken = jwt.verify(token, process.env.SECRET);
+blogsRouter.post(
+  "/",
+  middleware.userExtractor,
+  async (request, response, next) => {
+    try {
+      const body = request.body;
+      const userRequest = request.user;
 
-    if (!token || !decodedToken.id) {
-      return response.status(401).json({ error: "token missing or invalid" });
-    }
+      const user = await User.findById(userRequest.id);
 
-    const user = await User.findById(decodedToken.id);
-
-    const blog = new Blog({
-      title: body.title,
-      author: body.author,
-      url: body.url,
-      likes: body.likes,
-      user: user.id,
-    });
-
-    const result = await blog.save();
-    user.blogs = user.blogs.concat(result._id);
-    await user.save();
-    response.status(201).json(result);
-  } catch (error) {
-    next(error);
-  }
-});
-
-blogsRouter.delete("/:id", async (request, response, next) => {
-  try {
-    const token = request.token;
-    const decodedToken = jwt.verify(token, process.env.SECRET);
-
-    if (!token || !decodedToken.id) {
-      return response.status(401).json({ error: "token missing or invalid" });
-    }
-
-    const { id } = request.params;
-    const blog = await Blog.findById(id);
-
-    if (blog.user.toString() !== decodedToken.id) {
-      return response.status(401).json({
-        error: "Unauthorized to access the blog",
+      const blog = new Blog({
+        title: body.title,
+        author: body.author,
+        url: body.url,
+        likes: body.likes,
+        user: user.id,
       });
-    }
 
-    await blog.deleteOne();
-    response.status(204).end();
-  } catch (error) {
-    next(error);
-  }
-});
+      const result = await blog.save();
+      user.blogs = user.blogs.concat(result._id);
+      await user.save();
+      response.status(201).json(result);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+blogsRouter.delete(
+  "/:id",
+  middleware.userExtractor,
+  async (request, response, next) => {
+    try {
+      const userRequest = request.user;
+
+      const { id } = request.params;
+      const blog = await Blog.findById(id);
+
+      if (blog.user.toString() !== userRequest.id) {
+        return response.status(401).json({
+          error: "Unauthorized to access the blog",
+        });
+      }
+
+      await blog.deleteOne();
+      response.status(204).end();
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 
 blogsRouter.get("/:id", async (request, response) => {
   const { id } = request.params;
