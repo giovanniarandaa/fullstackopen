@@ -11,7 +11,11 @@ const App = () => {
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
   const [message, setMessage] = useState(null);
-  const [newNote, setNewNote] = useState("");
+  const [form, setForm] = useState({
+    title: "",
+    author: "",
+    url: "",
+  });
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -45,19 +49,22 @@ const App = () => {
 
   const addNote = async (event) => {
     event.preventDefault();
-    const blogObject = { title: newNote, author: user.name, url: newNote };
+    const blogObject = {
+      title: form.title,
+      author: form.author,
+      url: form.url,
+      user: user.id,
+      likes: 0,
+    };
+
     await blogService.create(blogObject);
     setBlogs(blogs.concat(blogObject));
-    setNewNote("");
+    setForm({ title: "", author: "", url: "" });
   };
 
   const logout = () => {
     window.localStorage.removeItem("loggedBlogappUser");
     setUser(null);
-  };
-
-  const handleNoteChange = (event) => {
-    setNewNote(event.target.value);
   };
 
   const loginForm = () => (
@@ -89,8 +96,32 @@ const App = () => {
 
   const noteForm = () => (
     <form onSubmit={addNote}>
-      <input value={newNote} onChange={handleNoteChange} />
-      <button type="submit">save</button>
+      <h2>create a new blog</h2>
+      <div>
+        title
+        <input
+          type="text"
+          value={form.title}
+          onChange={({ target }) => setForm({ ...form, title: target.value })}
+        />
+      </div>
+      <div>
+        author
+        <input
+          type="text"
+          value={form.author}
+          onChange={({ target }) => setForm({ ...form, author: target.value })}
+        />
+      </div>
+      <div>
+        url
+        <input
+          type="text"
+          value={form.url}
+          onChange={({ target }) => setForm({ ...form, url: target.value })}
+        />
+      </div>
+      <button type="submit">create</button>
     </form>
   );
 
@@ -115,6 +146,7 @@ const App = () => {
           <p>
             {user?.name} logged in <button onClick={logout}>logout</button>
           </p>
+          {noteForm()}
           {blogsList()}
         </>
       )}
