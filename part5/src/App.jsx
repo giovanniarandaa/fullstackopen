@@ -17,6 +17,15 @@ const App = () => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
 
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON);
+      setUser(user);
+      blogService.setToken(user.token);
+    }
+  }, []);
+
   const handleLogin = async (event) => {
     event.preventDefault();
 
@@ -25,6 +34,7 @@ const App = () => {
       setUser(user);
       setUsername("");
       setPassword("");
+      window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
     } catch (exception) {
       setMessage({ type: "error", text: "wrong username or password" });
       setTimeout(() => {
@@ -39,6 +49,11 @@ const App = () => {
     await blogService.create(blogObject);
     setBlogs(blogs.concat(blogObject));
     setNewNote("");
+  };
+
+  const logout = () => {
+    window.localStorage.removeItem("loggedBlogappUser");
+    setUser(null);
   };
 
   const handleNoteChange = (event) => {
@@ -97,7 +112,9 @@ const App = () => {
         loginForm()
       ) : (
         <>
-          <p>{user?.name} logged in</p>
+          <p>
+            {user?.name} logged in <button onClick={logout}>logout</button>
+          </p>
           {blogsList()}
         </>
       )}
