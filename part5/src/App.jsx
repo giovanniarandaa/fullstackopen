@@ -59,7 +59,15 @@ const App = () => {
 
     await blogService.create(blogObject);
     setBlogs(blogs.concat(blogObject));
+    setMessage({
+      type: "success",
+      text: `a new blog ${blogObject.title} by ${blogObject.author} added`,
+    });
     setForm({ title: "", author: "", url: "" });
+
+    setTimeout(() => {
+      setMessage(null);
+    }, 5000);
   };
 
   const logout = () => {
