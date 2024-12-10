@@ -4,15 +4,29 @@ const app = require("../../app");
 const supertest = require("supertest");
 const mongoose = require("mongoose");
 const Blog = require("../../models/blog");
+const User = require("../../models/user");
 const helper = require("./test_helper");
+const bcrypt = require("bcrypt");
 
 const api = supertest(app);
 
 beforeEach(async () => {
+  await User.deleteMany({});
   await Blog.deleteMany({});
 
+  const user = new User({
+    username: "root",
+    name: "Root User",
+    passwordHash: await bcrypt.hash("secret", 10),
+  });
+
+  await user.save();
+
   for (let blog of helper.initialBlogs) {
-    let blogObject = new Blog(blog);
+    let blogObject = new Blog({
+      ...blog,
+      user: user._id,
+    });
     await blogObject.save();
   }
 });
@@ -36,6 +50,12 @@ test("unique identifier property of blog posts is named id", async () => {
 test("a new blog can be created with a POST request", async () => {
   const initialBlogs = await helper.blogsInDb();
 
+  // login user
+  const loginUser = await api
+    .post("/api/login")
+    .send({ username: "root", password: "secret" })
+    .expect(200);
+
   const newBlog = {
     title: "Nuevo Blog",
     author: "Autor de Prueba",
@@ -45,6 +65,7 @@ test("a new blog can be created with a POST request", async () => {
 
   await api
     .post("/api/blogs")
+    .set("Authorization", `Bearer ${loginUser.body.token}`)
     .send(newBlog)
     .expect(201)
     .expect("Content-Type", /application\/json/);
@@ -57,6 +78,11 @@ test("a new blog can be created with a POST request", async () => {
 });
 
 test("if the likes property is missing, it defaults to 0", async () => {
+  const loginUser = await api
+    .post("/api/login")
+    .send({ username: "root", password: "secret" })
+    .expect(200);
+
   const newBlog = {
     title: "Blog sin Likes",
     author: "Autor de Prueba",
@@ -65,6 +91,7 @@ test("if the likes property is missing, it defaults to 0", async () => {
 
   const response = await api
     .post("/api/blogs")
+    .set("Authorization", `Bearer ${loginUser.body.token}`)
     .send(newBlog)
     .expect(201)
     .expect("Content-Type", /application\/json/);
@@ -74,6 +101,11 @@ test("if the likes property is missing, it defaults to 0", async () => {
 });
 
 test("responds with 400 Bad Request if url is missing", async () => {
+  const loginUser = await api
+    .post("/api/login")
+    .send({ username: "root", password: "secret" })
+    .expect(200);
+
   const newBlog = {
     title: "Title without URL",
     author: "Author",
@@ -81,6 +113,7 @@ test("responds with 400 Bad Request if url is missing", async () => {
 
   const response = await api
     .post("/api/blogs")
+    .set("Authorization", `Bearer ${loginUser.body.token}`)
     .send(newBlog)
     .expect(400)
     .expect("Content-Type", /application\/json/);
@@ -119,10 +152,18 @@ describe("viewing a specific blog", () => {
 });
 
 test("deletion of a blog", async () => {
+  const loginUser = await api
+    .post("/api/login")
+    .send({ username: "root", password: "secret" })
+    .expect(200);
+
   const blogAtStart = await helper.blogsInDb();
   const blogToDelete = blogAtStart[0];
 
-  await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+  await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .set("Authorization", `Bearer ${loginUser.body.token}`)
+    .expect(204);
 
   const blogAtEnd = await helper.blogsInDb();
 
