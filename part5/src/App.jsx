@@ -4,8 +4,11 @@ import blogService from "./services/blogs";
 import loginService from "./services/login";
 import "./App.css";
 import Notification from "./components/Notification.jsx";
+import LoginForm from "./components/LoginForm.jsx";
+import NoteForm from "./components/NoteForm.jsx";
 
 const App = () => {
+  const [noteFormVisible, setNoteFormVisible] = useState(false);
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -75,63 +78,22 @@ const App = () => {
     setUser(null);
   };
 
-  const loginForm = () => (
-    <div>
-      <h2>Log in to application</h2>
-      <form onSubmit={handleLogin}>
-        <div>
-          username
-          <input
-            type="text"
-            value={username}
-            name="Username"
-            onChange={({ target }) => setUsername(target.value)}
-          />
-        </div>
-        <div>
-          password
-          <input
-            type="password"
-            value={password}
-            name="Password"
-            onChange={({ target }) => setPassword(target.value)}
-          />
-        </div>
-        <button type="submit">login</button>
-      </form>
-    </div>
-  );
+  const noteForm = () => {
+    const hideWhenVisible = { display: noteFormVisible ? "none" : "block" };
+    const showWhenVisible = { display: noteFormVisible ? "block" : "none" };
 
-  const noteForm = () => (
-    <form onSubmit={addNote}>
-      <h2>create a new blog</h2>
+    return (
       <div>
-        title
-        <input
-          type="text"
-          value={form.title}
-          onChange={({ target }) => setForm({ ...form, title: target.value })}
-        />
+        <div style={hideWhenVisible}>
+          <button onClick={() => setNoteFormVisible(true)}>new note</button>
+        </div>
+        <div style={showWhenVisible}>
+          <NoteForm addNote={addNote} setForm={setForm} form={form} />
+          <button onClick={() => setNoteFormVisible(false)}>cancel</button>
+        </div>
       </div>
-      <div>
-        author
-        <input
-          type="text"
-          value={form.author}
-          onChange={({ target }) => setForm({ ...form, author: target.value })}
-        />
-      </div>
-      <div>
-        url
-        <input
-          type="text"
-          value={form.url}
-          onChange={({ target }) => setForm({ ...form, url: target.value })}
-        />
-      </div>
-      <button type="submit">create</button>
-    </form>
-  );
+    );
+  };
 
   const blogsList = () => {
     return (
@@ -148,7 +110,13 @@ const App = () => {
       <h2>blogs</h2>
       <Notification message={message} />
       {user === null ? (
-        loginForm()
+        <LoginForm
+          handleLogin={handleLogin}
+          password={password}
+          setPassword={({ target }) => setPassword(target.value)}
+          setUsername={({ target }) => setUsername(target.value)}
+          username={username}
+        />
       ) : (
         <>
           <p>
