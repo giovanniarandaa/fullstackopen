@@ -8,7 +8,7 @@ import LoginForm from "./components/LoginForm.jsx";
 import NoteForm from "./components/NoteForm.jsx";
 
 const App = () => {
-  const [noteFormVisible, setNoteFormVisible] = useState(false);
+  const [blogVisible, setBlogVisible] = useState(false);
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -79,17 +79,17 @@ const App = () => {
   };
 
   const noteForm = () => {
-    const hideWhenVisible = { display: noteFormVisible ? "none" : "block" };
-    const showWhenVisible = { display: noteFormVisible ? "block" : "none" };
+    const hideWhenVisible = { display: blogVisible ? "none" : "block" };
+    const showWhenVisible = { display: blogVisible ? "block" : "none" };
 
     return (
       <div>
         <div style={hideWhenVisible}>
-          <button onClick={() => setNoteFormVisible(true)}>new note</button>
+          <button onClick={() => setBlogVisible(true)}>create new blog</button>
         </div>
         <div style={showWhenVisible}>
           <NoteForm addNote={addNote} setForm={setForm} form={form} />
-          <button onClick={() => setNoteFormVisible(false)}>cancel</button>
+          <button onClick={() => setBlogVisible(false)}>cancel</button>
         </div>
       </div>
     );
