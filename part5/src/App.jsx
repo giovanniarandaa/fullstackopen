@@ -116,8 +116,8 @@ const App = () => {
         <LoginForm
           handleLogin={handleLogin}
           password={password}
-          setPassword={({ target }) => setPassword(target.value)}
-          setUsername={({ target }) => setUsername(target.value)}
+          handleUsernameChange={({ target }) => setPassword(target.value)}
+          handlePasswordChange={({ target }) => setUsername(target.value)}
           username={username}
         />
       ) : (
