@@ -9,6 +9,26 @@ blogsRouter.get("/", async (request, response) => {
   response.json(blogs);
 });
 
+blogsRouter.put("/:id", async (request, response) => {
+  const { author, title, url, likes } = request.body;
+  const blog = {
+    author,
+    title,
+    url,
+    likes,
+  };
+
+  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {
+    new: true,
+  });
+
+  if (updatedBlog) {
+    response.json(updatedBlog);
+  } else {
+    response.status(404).end();
+  }
+});
+
 blogsRouter.post("/", middleware.userExtractor, async (request, response) => {
   const body = request.body;
   const userRequest = request.user;

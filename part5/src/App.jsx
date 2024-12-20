@@ -10,6 +10,7 @@ import NoteForm from "./components/NoteForm.jsx";
 const App = () => {
   const [blogVisible, setBlogVisible] = useState(false);
   const [blogs, setBlogs] = useState([]);
+  const [update, setUpdate] = useState(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
@@ -21,8 +22,9 @@ const App = () => {
   });
 
   useEffect(() => {
+    console.log(update);
     blogService.getAll().then((blogs) => setBlogs(blogs));
-  }, []);
+  }, [update]);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
@@ -99,7 +101,7 @@ const App = () => {
     return (
       <div>
         {blogs.map((blog) => (
-          <Blog key={blog.id} blog={blog} />
+          <Blog setUpdate={setUpdate} key={blog.id} blog={blog} />
         ))}
       </div>
     );

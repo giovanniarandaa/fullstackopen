@@ -1,4 +1,5 @@
 import { useState } from "react";
+import blogService from "../services/blogs";
 
 const blogStyle = {
   paddingTop: 10,
@@ -8,8 +9,24 @@ const blogStyle = {
   marginBottom: 5,
 };
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, setUpdate }) => {
   const [show, setShow] = useState(false);
+
+  const handleLike = () => {
+    const updatedBlog = {
+      ...blog,
+      likes: blog.likes + 1,
+    };
+    blogService
+      .update(blog.id, updatedBlog)
+      .then((response) => {
+        setUpdate(Math.random() * 100);
+        console.log("Blog updated:", response);
+      })
+      .catch((error) => {
+        console.error("Error updating blog:", error);
+      });
+  };
 
   return (
     <>
@@ -22,7 +39,7 @@ const Blog = ({ blog }) => {
           <div>
             {blog.url}
             <br />
-            likes {blog.likes} <button>like</button> <br />
+            likes {blog.likes} <button onClick={handleLike}>like</button> <br />
             {blog.author}
           </div>
         )}
