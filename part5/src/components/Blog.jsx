@@ -12,6 +12,17 @@ const blogStyle = {
 const Blog = ({ blog, setUpdate }) => {
   const [show, setShow] = useState(false);
 
+  const handleDelete = async () => {
+    const confirm = window.confirm(
+      `Delete blog ${blog.title} by ${blog.author}?`,
+    );
+
+    if (confirm) {
+      await blogService.remove(blog.id);
+      setUpdate(Math.random() * 100);
+    }
+  };
+
   const handleLike = () => {
     const updatedBlog = {
       ...blog,
@@ -41,6 +52,9 @@ const Blog = ({ blog, setUpdate }) => {
             <br />
             likes {blog.likes} <button onClick={handleLike}>like</button> <br />
             {blog.author}
+            <div>
+              <button onClick={handleDelete}>remove</button>
+            </div>
           </div>
         )}
       </div>
