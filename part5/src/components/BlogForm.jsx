@@ -1,11 +1,27 @@
-const NoteForm = ({ addNote, setForm, form }) => {
+import { useState } from "react";
+
+const BlogForm = ({ addBlog }) => {
+  const [form, setForm] = useState({
+    title: "",
+    author: "",
+    url: "",
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    addBlog(form);
+    setForm({ title: "", author: "", url: "" });
+  };
+
   return (
-    <form onSubmit={addNote}>
+    <form onSubmit={handleSubmit}>
       <h2>create a new blog</h2>
       <div>
         title
         <input
+          aria-label="title"
           type="text"
+          name="title"
           value={form.title}
           onChange={({ target }) => setForm({ ...form, title: target.value })}
         />
@@ -14,6 +30,8 @@ const NoteForm = ({ addNote, setForm, form }) => {
         author
         <input
           type="text"
+          name="author"
+          aria-label="author"
           value={form.author}
           onChange={({ target }) => setForm({ ...form, author: target.value })}
         />
@@ -21,7 +39,9 @@ const NoteForm = ({ addNote, setForm, form }) => {
       <div>
         url
         <input
+          aria-label="url"
           type="text"
+          name="url"
           value={form.url}
           onChange={({ target }) => setForm({ ...form, url: target.value })}
         />
@@ -30,4 +50,4 @@ const NoteForm = ({ addNote, setForm, form }) => {
     </form>
   );
 };
-export default NoteForm;
+export default BlogForm;

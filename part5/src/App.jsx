@@ -5,7 +5,7 @@ import loginService from "./services/login";
 import "./App.css";
 import Notification from "./components/Notification.jsx";
 import LoginForm from "./components/LoginForm.jsx";
-import NoteForm from "./components/NoteForm.jsx";
+import BlogForm from "./components/BlogForm.jsx";
 
 const App = () => {
   const [blogVisible, setBlogVisible] = useState(false);
@@ -15,11 +15,6 @@ const App = () => {
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
   const [message, setMessage] = useState(null);
-  const [form, setForm] = useState({
-    title: "",
-    author: "",
-    url: "",
-  });
 
   useEffect(() => {
     blogService.getAll().then((blogs) => {
@@ -80,8 +75,7 @@ const App = () => {
     }
   };
 
-  const addNote = async (event) => {
-    event.preventDefault();
+  const addBlog = async (form) => {
     const blogObject = {
       title: form.title,
       author: form.author,
@@ -96,7 +90,6 @@ const App = () => {
       type: "success",
       text: `a new blog ${blogObject.title} by ${blogObject.author} added`,
     });
-    setForm({ title: "", author: "", url: "" });
 
     setTimeout(() => {
       setMessage(null);
@@ -118,7 +111,7 @@ const App = () => {
           <button onClick={() => setBlogVisible(true)}>create new blog</button>
         </div>
         <div style={showWhenVisible}>
-          <NoteForm addNote={addNote} setForm={setForm} form={form} />
+          <BlogForm addBlog={addBlog} />
           <button onClick={() => setBlogVisible(false)}>cancel</button>
         </div>
       </div>
