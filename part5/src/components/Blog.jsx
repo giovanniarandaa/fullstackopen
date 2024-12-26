@@ -48,9 +48,10 @@ const Blog = ({ blog, setUpdate }) => {
         </button>
         {show && (
           <div>
-            {blog.url}
+            <span className="url">{blog.url}</span>
             <br />
-            likes {blog.likes} <button onClick={handleLike}>like</button> <br />
+            likes <span className="likes">{blog.likes}</span>{" "}
+            <button onClick={handleLike}>like</button> <br />
             {blog.author}
             <div>
               <button onClick={handleDelete}>remove</button>
