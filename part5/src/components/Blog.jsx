@@ -41,8 +41,8 @@ const Blog = ({ blog, setUpdate }) => {
 
   return (
     <>
-      <div style={blogStyle}>
-        {blog.title}
+      <div style={blogStyle} className="blog">
+        {blog.title} {!show && blog.author}
         <button onClick={() => setShow((prevShow) => !prevShow)}>
           {show ? "hide" : "show"}
         </button>
