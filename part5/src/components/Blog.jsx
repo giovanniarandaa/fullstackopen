@@ -9,35 +9,8 @@ const blogStyle = {
   marginBottom: 5,
 };
 
-const Blog = ({ blog, setUpdate }) => {
+const Blog = ({ blog, handleLike, handleDelete }) => {
   const [show, setShow] = useState(false);
-
-  const handleDelete = async () => {
-    const confirm = window.confirm(
-      `Delete blog ${blog.title} by ${blog.author}?`,
-    );
-
-    if (confirm) {
-      await blogService.remove(blog.id);
-      setUpdate(Math.random() * 100);
-    }
-  };
-
-  const handleLike = () => {
-    const updatedBlog = {
-      ...blog,
-      likes: blog.likes + 1,
-    };
-    blogService
-      .update(blog.id, updatedBlog)
-      .then((response) => {
-        setUpdate(Math.random() * 100);
-        console.log("Blog updated:", response);
-      })
-      .catch((error) => {
-        console.error("Error updating blog:", error);
-      });
-  };
 
   return (
     <>
@@ -51,7 +24,7 @@ const Blog = ({ blog, setUpdate }) => {
             <span className="url">{blog.url}</span>
             <br />
             likes <span className="likes">{blog.likes}</span>{" "}
-            <button onClick={handleLike}>like</button> <br />
+            <button onClick={() => handleLike(blog)}>like</button> <br />
             {blog.author}
             <div>
               <button onClick={handleDelete}>remove</button>

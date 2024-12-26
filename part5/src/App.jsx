@@ -53,6 +53,33 @@ const App = () => {
     }
   };
 
+  const handleLike = (blog) => {
+    const updatedBlog = {
+      ...blog,
+      likes: blog.likes + 1,
+    };
+    blogService
+      .update(blog.id, updatedBlog)
+      .then((response) => {
+        setUpdate(Math.random() * 100);
+        console.log("Blog updated:", response);
+      })
+      .catch((error) => {
+        console.error("Error updating blog:", error);
+      });
+  };
+
+  const handleDelete = async (blog) => {
+    const confirm = window.confirm(
+      `Delete blog ${blog.title} by ${blog.author}?`,
+    );
+
+    if (confirm) {
+      await blogService.remove(blog.id);
+      setUpdate(Math.random() * 100);
+    }
+  };
+
   const addNote = async (event) => {
     event.preventDefault();
     const blogObject = {
@@ -102,7 +129,12 @@ const App = () => {
     return (
       <div>
         {blogs.map((blog) => (
-          <Blog setUpdate={setUpdate} key={blog.id} blog={blog} />
+          <Blog
+            handleDelete={handleDelete}
+            handleLike={handleLike}
+            key={blog.id}
+            blog={blog}
+          />
         ))}
       </div>
     );
