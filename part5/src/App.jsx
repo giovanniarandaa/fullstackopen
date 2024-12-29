@@ -87,6 +87,7 @@ const App = () => {
     };
 
     const newBlog = await blogService.create(blogObject);
+    setBlogVisible(false);
     setBlogs(blogs.concat(newBlog));
     setMessage({
       type: "success",
