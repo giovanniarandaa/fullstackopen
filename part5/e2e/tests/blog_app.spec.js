@@ -49,5 +49,23 @@ describe("Blog app", () => {
       await page.getByRole("button", { name: "create" }).click();
       await expect(page.getByText("Kansalle ruokaa Kansan Make")).toBeVisible();
     });
+
+    test("a blog can be liked", async ({ page }) => {
+      await page.getByRole("button", { name: "create new blog" }).click();
+      await page.getByTestId("title").fill("Test Blog for Liking");
+      await page.getByTestId("author").fill("Test Author");
+      await page.getByTestId("url").fill("www.example.com");
+      await page.getByRole("button", { name: "create" }).click();
+
+      await expect(
+        page.getByText("Test Blog for Liking Test Author"),
+      ).toBeVisible();
+      await page.getByRole("button", { name: "show" }).click();
+      const likeButton = page.getByRole("button", { name: "like" });
+      await expect(page.getByText("likes 0")).toBeVisible();
+      await likeButton.click();
+      //await page.waitForSelector("text=likes 1");
+      await expect(page.getByText("likes 1")).toBeVisible();
+    });
   });
 });

@@ -86,8 +86,8 @@ const App = () => {
       likes: 0,
     };
 
-    await blogService.create(blogObject);
-    setBlogs(blogs.concat(blogObject));
+    const newBlog = await blogService.create(blogObject);
+    setBlogs(blogs.concat(newBlog));
     setMessage({
       type: "success",
       text: `a new blog ${blogObject.title} by ${blogObject.author} added`,
