@@ -9,7 +9,7 @@ const blogStyle = {
   marginBottom: 5,
 };
 
-const Blog = ({ blog, handleLike, handleDelete }) => {
+const Blog = ({ blog, handleLike, handleDelete, user }) => {
   const [show, setShow] = useState(false);
 
   return (
@@ -26,9 +26,11 @@ const Blog = ({ blog, handleLike, handleDelete }) => {
             likes <span className="likes">{blog.likes}</span>{" "}
             <button onClick={() => handleLike(blog)}>like</button> <br />
             {blog.author}
-            <div>
-              <button onClick={handleDelete}>remove</button>
-            </div>
+            {user?.username === blog.user?.username && (
+              <div>
+                <button onClick={handleDelete}>remove</button>
+              </div>
+            )}
           </div>
         )}
       </div>
