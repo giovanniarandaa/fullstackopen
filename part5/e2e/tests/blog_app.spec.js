@@ -35,4 +35,19 @@ describe("Blog app", () => {
       await expect(page.getByText("wrong username or password")).toBeVisible();
     });
   });
+
+  describe("When logged in", () => {
+    beforeEach(async ({ page }) => {
+      await loginWith(page, "garanda", "1234567890");
+    });
+
+    test("a new blog can be created", async ({ page }) => {
+      await page.getByRole("button", { name: "create new blog" }).click();
+      await page.getByTestId("title").fill("Kansalle ruokaa");
+      await page.getByTestId("author").fill("Kansan Make");
+      await page.getByTestId("url").fill("www.example.com");
+      await page.getByRole("button", { name: "create" }).click();
+      await expect(page.getByText("Kansalle ruokaa Kansan Make")).toBeVisible();
+    });
+  });
 });

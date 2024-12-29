@@ -17,10 +17,11 @@ const App = () => {
   const [message, setMessage] = useState(null);
 
   useEffect(() => {
+    if (!user) return;
     blogService.getAll().then((blogs) => {
       setBlogs(blogs.sort((a, b) => b.likes - a.likes));
     });
-  }, [update]);
+  }, [update, user]);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
@@ -40,6 +41,7 @@ const App = () => {
       setUsername("");
       setPassword("");
       window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
+      blogService.setToken(user.token);
     } catch (exception) {
       setMessage({ type: "error", text: "wrong username or password" });
       setTimeout(() => {

@@ -19,6 +19,7 @@ const BlogForm = ({ addBlog }) => {
       <div>
         title
         <input
+          data-testid="title"
           aria-label="title"
           type="text"
           name="title"
@@ -29,6 +30,7 @@ const BlogForm = ({ addBlog }) => {
       <div>
         author
         <input
+          data-testid="author"
           type="text"
           name="author"
           aria-label="author"
@@ -39,6 +41,7 @@ const BlogForm = ({ addBlog }) => {
       <div>
         url
         <input
+          data-testid="url"
           aria-label="url"
           type="text"
           name="url"
