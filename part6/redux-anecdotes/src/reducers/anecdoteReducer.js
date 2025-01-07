@@ -24,6 +24,13 @@ export const increaseVote = (id) => {
   };
 };
 
+export const createAnecdote = (content) => {
+  return {
+    type: "CREATE",
+    data: asObject(content),
+  };
+};
+
 const initialState = anecdotesAtStart.map(asObject);
 
 const reducer = (state = initialState, action) => {
@@ -34,6 +41,8 @@ const reducer = (state = initialState, action) => {
           ? { ...anecdote, votes: anecdote.votes + 1 }
           : anecdote,
       );
+    case "CREATE":
+      return [...state, action.data];
     default:
       return state;
   }
