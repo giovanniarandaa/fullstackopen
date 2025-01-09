@@ -19,13 +19,6 @@ const asObject = (anecdote) => {
   };
 };
 
-export const createAnecdote = (content) => {
-  return {
-    type: "CREATE",
-    data: asObject(content),
-  };
-};
-
 const initialState = anecdotesAtStart.map(asObject);
 
 const anecdoteSlice = createSlice({
@@ -40,10 +33,10 @@ const anecdoteSlice = createSlice({
           : anecdote,
       );
     },
-    createBlog(state, action) {
-      return [...state, action.payload];
+    createAnecdote(state, action) {
+      return [...state, asObject(action.payload)];
     },
   },
 });
-export const { increaseVote, createBlog } = anecdoteSlice.actions;
+export const { increaseVote, createAnecdote } = anecdoteSlice.actions;
 export default anecdoteSlice.reducer;
