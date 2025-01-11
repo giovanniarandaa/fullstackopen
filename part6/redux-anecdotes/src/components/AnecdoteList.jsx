@@ -14,12 +14,9 @@ const AnecdoteList = () => {
   const dispatch = useDispatch();
 
   const vote = (id) => {
-    dispatch(increaseVote(id));
-    dispatch(
-      setNotification(
-        `you voted '${anecdotes.find((anecdote) => anecdote.id === id).content}'`,
-      ),
-    );
+    const anecdote = anecdotes.find((anecdote) => anecdote.id === id);
+    dispatch(increaseVote(anecdote));
+    dispatch(setNotification(`you voted '${anecdote.content}'`));
 
     const timeout = setTimeout(() => {
       dispatch(clearNotification());
