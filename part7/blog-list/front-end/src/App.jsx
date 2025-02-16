@@ -1,65 +1,22 @@
 import { useState, useEffect, useReducer } from "react";
-import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import "./App.css";
 import Notification from "./components/Notification.jsx";
 import LoginForm from "./components/LoginForm.jsx";
-import BlogForm from "./components/BlogForm.jsx";
 import {
   notificationReducer,
   setNotification,
 } from "../reducers/notificationReducer.js";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Home } from "./components/Home.jsx";
+import { Route, Routes } from "react-router-dom";
+import { Users } from "./components/Users.jsx";
 
 const App = () => {
-  const [blogVisible, setBlogVisible] = useState(false);
   const [user, setUser] = useState(null);
-  const {
-    data: blogs,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ["blogs"],
-    queryFn: blogService.getAll,
-    enabled: !!user,
-  });
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, dispatch] = useReducer(notificationReducer, null);
-  const queryClient = useQueryClient();
-  const newBlogMutation = useMutation({
-    mutationFn: blogService.create,
-    onSuccess: () => {
-      queryClient.invalidateQueries(["blogs"]);
-      dispatch(setNotification("Blog added successfully!", "success"));
-    },
-    onError: () => {
-      dispatch(setNotification("Error adding blog", "error"));
-    },
-  });
-
-  const likeBlogMutation = useMutation({
-    mutationFn: ({ id, updatedBlog }) => blogService.update(id, updatedBlog),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["blogs"]);
-      dispatch(setNotification("Liked blog!", "success"));
-    },
-    onError: () => {
-      dispatch(setNotification("Error liking blog", "error"));
-    },
-  });
-
-  const deleteBlogMutation = useMutation({
-    mutationFn: (id) => blogService.remove(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["blogs"]);
-      dispatch(setNotification("Blog deleted!", "success"));
-    },
-    onError: () => {
-      dispatch(setNotification("Error deleting blog", "error"));
-    },
-  });
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
@@ -86,78 +43,9 @@ const App = () => {
     }
   };
 
-  const handleLike = (blog) => {
-    const updatedBlog = {
-      ...blog,
-      likes: blog.likes + 1,
-    };
-
-    likeBlogMutation.mutate({ id: blog.id, updatedBlog });
-  };
-
-  const handleDelete = async (blog) => {
-    const confirm = window.confirm(
-      `Delete blog ${blog.title} by ${blog.author}?`,
-    );
-
-    if (confirm) {
-      await deleteBlogMutation.mutateAsync(blog.id);
-      dispatch(setNotification(`Deleted "${blog.title}"`));
-    }
-  };
-
-  const addBlog = async (form) => {
-    const blogObject = {
-      title: form.title,
-      author: form.author,
-      url: form.url,
-      user: user.id,
-      likes: 0,
-    };
-
-    newBlogMutation.mutate(blogObject);
-    setBlogVisible(false);
-  };
-
   const logout = () => {
     window.localStorage.removeItem("loggedBlogappUser");
     setUser(null);
-  };
-
-  const noteForm = () => {
-    const hideWhenVisible = { display: blogVisible ? "none" : "block" };
-    const showWhenVisible = { display: blogVisible ? "block" : "none" };
-
-    return (
-      <div>
-        <div style={hideWhenVisible}>
-          <button onClick={() => setBlogVisible(true)}>create new blog</button>
-        </div>
-        <div style={showWhenVisible}>
-          <BlogForm addBlog={addBlog} />
-          <button onClick={() => setBlogVisible(false)}>cancel</button>
-        </div>
-      </div>
-    );
-  };
-
-  if (isLoading) return <div>Loading blogs...</div>;
-  if (isError) return <div>Error loading blogs.</div>;
-
-  const blogsList = () => {
-    return (
-      <div>
-        {blogs.map((blog) => (
-          <Blog
-            handleDelete={handleDelete}
-            handleLike={handleLike}
-            key={blog.id}
-            blog={blog}
-            user={user}
-          />
-        ))}
-      </div>
-    );
   };
 
   return (
@@ -177,8 +65,13 @@ const App = () => {
           <p>
             {user?.name} logged in <button onClick={logout}>logout</button>
           </p>
-          {noteForm()}
-          {blogsList()}
+          <Routes>
+            <Route
+              path="/"
+              element={<Home user={user} dispatch={dispatch} />}
+            />
+            <Route path="/users" element={<Users />} />
+          </Routes>
         </>
       )}
     </div>

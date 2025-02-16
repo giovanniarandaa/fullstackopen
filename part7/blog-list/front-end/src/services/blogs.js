@@ -35,4 +35,28 @@ const remove = async (id) => {
   return response.data;
 };
 
-export default { getAll, setToken, create, update, remove };
+const getAllUsers = () => {
+  const config = {
+    headers: { Authorization: token },
+  };
+  const request = axios.get("/api/users", config);
+  return request.then((response) => response.data);
+};
+
+const getUser = (id) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+  const request = axios.get("/api/users/" + id, config);
+  return request.then((response) => response.data);
+};
+
+export default {
+  getAll,
+  setToken,
+  create,
+  update,
+  remove,
+  getAllUsers,
+  getUser,
+};
