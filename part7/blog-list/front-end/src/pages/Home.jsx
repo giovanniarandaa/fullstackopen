@@ -1,5 +1,5 @@
-import { Blogs } from "./Blogs.jsx";
-import BlogForm from "./BlogForm.jsx";
+import { Blogs } from "../components/Blogs.jsx";
+import BlogForm from "../components/BlogForm.jsx";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import blogService from "../services/blogs.js";

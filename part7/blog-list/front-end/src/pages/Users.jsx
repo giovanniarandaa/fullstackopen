@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import blogService from "../services/blogs";
+import blogService from "../services/blogs.js";
 import { Link } from "react-router-dom";
 
 export const Users = () => {

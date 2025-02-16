@@ -8,10 +8,11 @@ import {
   notificationReducer,
   setNotification,
 } from "../reducers/notificationReducer.js";
-import { Home } from "./components/Home.jsx";
+import { Home } from "./pages/Home.jsx";
 import { Route, Routes } from "react-router-dom";
-import { Users } from "./components/Users.jsx";
-import { UserDetail } from "./components/UserDetail.jsx";
+import { Users } from "./pages/Users.jsx";
+import { UserDetail } from "./pages/UserDetail.jsx";
+import { BlogDetail } from "./pages/BlogDetail.jsx";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -73,6 +74,10 @@ const App = () => {
             />
             <Route path="/users" element={<Users />} />
             <Route path="/users/:id" element={<UserDetail />} />
+            <Route
+              path="/blogs/:id"
+              element={<BlogDetail dispatch={dispatch} />}
+            />
           </Routes>
         </>
       )}
