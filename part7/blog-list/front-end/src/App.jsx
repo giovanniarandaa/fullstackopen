@@ -11,6 +11,7 @@ import {
 import { Home } from "./components/Home.jsx";
 import { Route, Routes } from "react-router-dom";
 import { Users } from "./components/Users.jsx";
+import { UserDetail } from "./components/UserDetail.jsx";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -71,6 +72,7 @@ const App = () => {
               element={<Home user={user} dispatch={dispatch} />}
             />
             <Route path="/users" element={<Users />} />
+            <Route path="/users/:id" element={<UserDetail />} />
           </Routes>
         </>
       )}
