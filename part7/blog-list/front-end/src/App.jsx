@@ -39,6 +39,28 @@ const App = () => {
     },
   });
 
+  const likeBlogMutation = useMutation({
+    mutationFn: ({ id, updatedBlog }) => blogService.update(id, updatedBlog),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["blogs"]);
+      dispatch(setNotification("Liked blog!", "success"));
+    },
+    onError: () => {
+      dispatch(setNotification("Error liking blog", "error"));
+    },
+  });
+
+  const deleteBlogMutation = useMutation({
+    mutationFn: (id) => blogService.remove(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["blogs"]);
+      dispatch(setNotification("Blog deleted!", "success"));
+    },
+    onError: () => {
+      dispatch(setNotification("Error deleting blog", "error"));
+    },
+  });
+
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
     if (loggedUserJSON) {
@@ -69,24 +91,17 @@ const App = () => {
       ...blog,
       likes: blog.likes + 1,
     };
-    blogService
-      .update(blog.id, updatedBlog)
-      .then(() => {
-        dispatch(setNotification(`Liked "${blog.title}"`));
-      })
-      .catch(() => {
-        dispatch(setNotification("Error updating blog"));
-      });
+
+    likeBlogMutation.mutate({ id: blog.id, updatedBlog });
   };
 
   const handleDelete = async (blog) => {
-    console.log(blog);
     const confirm = window.confirm(
       `Delete blog ${blog.title} by ${blog.author}?`,
     );
 
     if (confirm) {
-      await blogService.remove(blog.id);
+      await deleteBlogMutation.mutateAsync(blog.id);
       dispatch(setNotification(`Deleted "${blog.title}"`));
     }
   };
