@@ -1,6 +1,17 @@
 import PropTypes from "prop-types";
+import { useEffect } from "react";
 
-const Notification = ({ message }) => {
+const Notification = ({ message, dispatch }) => {
+  useEffect(() => {
+    if (message === null) return;
+
+    const timer = setTimeout(() => {
+      dispatch({ type: "CLEAR_NOTIFICATION" });
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [message]);
+
   if (message === null) return null;
 
   return (
