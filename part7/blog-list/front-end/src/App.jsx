@@ -10,26 +10,34 @@ import {
   notificationReducer,
   setNotification,
 } from "../reducers/notificationReducer.js";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const App = () => {
   const [blogVisible, setBlogVisible] = useState(false);
-  const [blogs, setBlogs] = useState([]);
-  const [update, setUpdate] = useState(null);
+  const [user, setUser] = useState(null);
+  const {
+    data: blogs,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["blogs"],
+    queryFn: blogService.getAll,
+    enabled: !!user,
+  });
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [user, setUser] = useState(null);
   const [message, dispatch] = useReducer(notificationReducer, null);
-
-  useEffect(() => {
-    dispatch(setNotification("Login successful!", "success"));
-  }, []);
-
-  useEffect(() => {
-    if (!user) return;
-    blogService.getAll().then((blogs) => {
-      setBlogs(blogs.sort((a, b) => b.likes - a.likes));
-    });
-  }, [update, user]);
+  const queryClient = useQueryClient();
+  const newBlogMutation = useMutation({
+    mutationFn: blogService.create,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["blogs"]);
+      dispatch(setNotification("Blog added successfully!", "success"));
+    },
+    onError: () => {
+      dispatch(setNotification("Error adding blog", "error"));
+    },
+  });
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
@@ -64,7 +72,6 @@ const App = () => {
     blogService
       .update(blog.id, updatedBlog)
       .then(() => {
-        setUpdate(Math.random() * 100);
         dispatch(setNotification(`Liked "${blog.title}"`));
       })
       .catch(() => {
@@ -80,7 +87,6 @@ const App = () => {
 
     if (confirm) {
       await blogService.remove(blog.id);
-      setUpdate(Math.random() * 100);
       dispatch(setNotification(`Deleted "${blog.title}"`));
     }
   };
@@ -94,22 +100,14 @@ const App = () => {
       likes: 0,
     };
 
-    const newBlog = await blogService.create(blogObject);
+    newBlogMutation.mutate(blogObject);
     setBlogVisible(false);
-    setBlogs(blogs.concat(newBlog));
-    dispatch(
-      setNotification(
-        `A new blog "${blogObject.title}" by ${blogObject.author} added`,
-      ),
-    );
   };
 
   const logout = () => {
     window.localStorage.removeItem("loggedBlogappUser");
     setUser(null);
   };
-
-  console.log(message);
 
   const noteForm = () => {
     const hideWhenVisible = { display: blogVisible ? "none" : "block" };
@@ -127,6 +125,9 @@ const App = () => {
       </div>
     );
   };
+
+  if (isLoading) return <div>Loading blogs...</div>;
+  if (isError) return <div>Error loading blogs.</div>;
 
   const blogsList = () => {
     return (
