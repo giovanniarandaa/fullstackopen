@@ -15,6 +15,18 @@ export const BlogDetail = ({ dispatch }) => {
   });
 
   const queryClient = useQueryClient();
+
+  const commentMutation = useMutation({
+    mutationFn: ({ id, comment }) => blogService.createComment(id, comment),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["blog", id]);
+      dispatch(setNotification("Comment added successfully!", "success"));
+    },
+    onError: () => {
+      dispatch(setNotification("Error adding comment", "error"));
+    },
+  });
+
   const likeBlogMutation = useMutation({
     mutationFn: ({ id, updatedBlog }) => blogService.update(id, updatedBlog),
     onSuccess: () => {
@@ -35,6 +47,12 @@ export const BlogDetail = ({ dispatch }) => {
     likeBlogMutation.mutate({ id: blog.id, updatedBlog });
   };
 
+  const createComment = (e) => {
+    e.preventDefault();
+    commentMutation.mutate({ id: blog.id, comment: e.target.comment.value });
+    e.target.comment.value = "";
+  };
+
   if (isLoading) return <div>Loading blog details...</div>;
   if (isError) return <div>Error loading blog details.</div>;
 
@@ -51,6 +69,18 @@ export const BlogDetail = ({ dispatch }) => {
         <button onClick={() => handleLike(blog)}>like</button>
       </p>
       <p>added by {blog.author}</p>
+      <div className="comments">
+        <h3>Comments</h3>
+        <form onSubmit={createComment}>
+          <input type="text" name="comment" />
+          <button type="submit">add comment</button>
+        </form>
+        <ul>
+          {blog.comments.map((comment) => (
+            <li key={comment.id}>{comment}</li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };

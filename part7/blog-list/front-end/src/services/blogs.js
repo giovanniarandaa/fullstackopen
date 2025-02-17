@@ -56,6 +56,14 @@ const getUser = (id) => {
   return request.then((response) => response.data);
 };
 
+const createComment = (id, comment) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+  const request = axios.post(`${baseUrl}/${id}/comments`, { comment }, config);
+  return request.then((response) => response.data);
+};
+
 export default {
   getAll,
   setToken,
@@ -65,4 +73,5 @@ export default {
   getAllUsers,
   getUser,
   getById,
+  createComment,
 };

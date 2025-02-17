@@ -92,4 +92,21 @@ blogsRouter.get("/:id", async (request, response) => {
   }
 });
 
+blogsRouter.post("/:id/comments", async (request, response) => {
+  const { id } = request.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return response.status(400).send({ error: "malformatted id" });
+  }
+
+  try {
+    const blog = await Blog.findById(id);
+    blog.comments = blog.comments.concat(request.body.comment);
+    await blog.save();
+    response.json(blog);
+  } catch (error) {
+    response.status(500).json({ error: "something went wrong" });
+  }
+});
+
 module.exports = blogsRouter;
