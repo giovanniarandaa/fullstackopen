@@ -9,7 +9,7 @@ import {
   setNotification,
 } from "../reducers/notificationReducer.js";
 import { Home } from "./pages/Home.jsx";
-import { Route, Routes } from "react-router-dom";
+import { Link, Route, Routes } from "react-router-dom";
 import { Users } from "./pages/Users.jsx";
 import { UserDetail } from "./pages/UserDetail.jsx";
 import { BlogDetail } from "./pages/BlogDetail.jsx";
@@ -52,7 +52,9 @@ const App = () => {
 
   return (
     <div>
-      <h2>blogs</h2>
+      <div>
+        <Link to="/">Blogs</Link> <Link to="/users">Users</Link>
+      </div>
       <Notification message={message} dispatch={dispatch} />
       {user === null ? (
         <LoginForm
