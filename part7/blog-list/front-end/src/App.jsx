@@ -2,6 +2,10 @@ import { useState, useEffect, useReducer } from "react";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import "./App.css";
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
 import Notification from "./components/Notification.jsx";
 import LoginForm from "./components/LoginForm.jsx";
 import {
@@ -9,10 +13,12 @@ import {
   setNotification,
 } from "../reducers/notificationReducer.js";
 import { Home } from "./pages/Home.jsx";
-import { Link, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { Users } from "./pages/Users.jsx";
 import { UserDetail } from "./pages/UserDetail.jsx";
 import { BlogDetail } from "./pages/BlogDetail.jsx";
+import { Container } from "@mui/material";
+import { Navigation } from "./components/Navigation.jsx";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -51,10 +57,8 @@ const App = () => {
   };
 
   return (
-    <div>
-      <div>
-        <Link to="/">Blogs</Link> <Link to="/users">Users</Link>
-      </div>
+    <Container maxWidth="xl">
+      <Navigation onLogout={logout} user={user} />
       <Notification message={message} dispatch={dispatch} />
       {user === null ? (
         <LoginForm
@@ -66,24 +70,23 @@ const App = () => {
         />
       ) : (
         <>
-          <p>
-            {user?.name} logged in <button onClick={logout}>logout</button>
-          </p>
-          <Routes>
-            <Route
-              path="/"
-              element={<Home user={user} dispatch={dispatch} />}
-            />
-            <Route path="/users" element={<Users />} />
-            <Route path="/users/:id" element={<UserDetail />} />
-            <Route
-              path="/blogs/:id"
-              element={<BlogDetail dispatch={dispatch} />}
-            />
-          </Routes>
+          <div style={{ paddingTop: "70px" }}>
+            <Routes>
+              <Route
+                path="/"
+                element={<Home user={user} dispatch={dispatch} />}
+              />
+              <Route path="/users" element={<Users />} />
+              <Route path="/users/:id" element={<UserDetail />} />
+              <Route
+                path="/blogs/:id"
+                element={<BlogDetail dispatch={dispatch} />}
+              />
+            </Routes>
+          </div>
         </>
       )}
-    </div>
+    </Container>
   );
 };
 

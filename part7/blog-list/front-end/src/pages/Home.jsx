@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import blogService from "../services/blogs.js";
 import { setNotification } from "../../reducers/notificationReducer.js";
+import { Button } from "@mui/material";
 
 export const Home = ({ user, dispatch }) => {
   const queryClient = useQueryClient();
@@ -39,7 +40,9 @@ export const Home = ({ user, dispatch }) => {
     return (
       <div>
         <div style={hideWhenVisible}>
-          <button onClick={() => setBlogVisible(true)}>create new blog</button>
+          <Button variant="contained" onClick={() => setBlogVisible(true)}>
+            create new blog
+          </Button>
         </div>
         <div style={showWhenVisible}>
           <BlogForm addBlog={addBlog} />

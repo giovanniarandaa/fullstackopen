@@ -1,6 +1,7 @@
 import Blog from "./Blog.jsx";
 import { useQuery } from "@tanstack/react-query";
 import blogService from "../services/blogs.js";
+import { List, Typography } from "@mui/material";
 
 export const Blogs = ({ user }) => {
   const {
@@ -18,10 +19,14 @@ export const Blogs = ({ user }) => {
 
   return (
     <div>
-      <h2>blogs</h2>
-      {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
-      ))}
+      <Typography variant="h2" gutterBottom>
+        Blogs
+      </Typography>
+      <List dense>
+        {blogs.map((blog) => (
+          <Blog key={blog.id} blog={blog} />
+        ))}
+      </List>
     </div>
   );
 };
