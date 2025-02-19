@@ -1,0 +1,20 @@
+{
+  "name": "misc",
+  "version": "1.0.0",
+  "description": "",
+  "license": "MIT",
+  "author": "Giovanni Aranda",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "@apollo/server": "^4.11.3",
+    "apollo-server": "^3.13.0",
+    "graphql": "^16.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
