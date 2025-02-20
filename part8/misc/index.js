@@ -1,6 +1,6 @@
-const { ApolloServer } = require('@apollo/server')
-const { startStandaloneServer } = require('@apollo/server/standalone')
-const { v4: uuidv4 } = require('uuid');
+const {ApolloServer} = require('@apollo/server')
+const {startStandaloneServer} = require('@apollo/server/standalone')
+const {v4: uuidv4} = require('uuid');
 
 let authors = [
     {
@@ -106,6 +106,11 @@ const typeDefs = `
       published: Int!
       genres: [String!]!
     ): Book!
+    
+    editAuthor(
+        name: String!
+        setBornTo: Int!
+      ): Author
   }
   type Book {
     title: String!
@@ -117,6 +122,7 @@ const typeDefs = `
   type Author {
     name: String!
     bookCount: Int!
+    born: Int
   }
   
   type Query {
@@ -173,6 +179,15 @@ const resolvers = {
             }
 
             return newBook;
+        },
+        editAuthor: (_, args) => {
+            let author = authors.find(a => a.name === args.name);
+            if (!author) {
+                return null;
+            }
+
+            author.born = args.setBornTo;
+            return author;
         }
     }
 }
@@ -183,7 +198,7 @@ const server = new ApolloServer({
 })
 
 startStandaloneServer(server, {
-    listen: { port: 4000 },
-}).then(({ url }) => {
+    listen: {port: 4000},
+}).then(({url}) => {
     console.log(`Server ready at ${url}`)
 })
